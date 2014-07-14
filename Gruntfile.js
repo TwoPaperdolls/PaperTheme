@@ -129,6 +129,14 @@ module.exports = function (grunt) {
                 dest: '../<%= clientName %>_production/', 
                 filter: 'isFile'
             }]
+          },
+          git:{
+            files: [{
+                expand: true, 
+                cwd:'./',
+                src: ['.git','.gitignore'], 
+                dest: '../<%= clientName %>_production', 
+            }]
           }
         },
         //replace all _s reference in ../<%= clientName %>_production/ with <%= clientName %>
