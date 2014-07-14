@@ -9,10 +9,10 @@ require 'susy';
 http_path = "/"
 
 # 2. probably don't need to touch these
-css_dir = "../css"
-sass_dir = "./"
-images_dir = "../imgs"
-javascripts_dir = "../js"
+css_dir = "css"
+sass_dir = "scss"
+images_dir = "imgs"
+javascripts_dir = "js"
 environment = :development
 relative_assets = true
 

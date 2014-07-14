@@ -31,8 +31,8 @@ http://weblogs.asp.net/dwahlin/techniques-strategies-and-patterns-for-structurin
 				// **************************
 				// code to execute goes here
 				// **************************
-			}catch(ex){console.log('jsModule_function(): ' + ex)}
-		};// end jsModule_function()
+			}catch(ex){console.log('jsModule_function(): ' + ex);}
+		}// end jsModule_function()
 
 		// return jsModule initilaztion method (jsModule.init)
 		// to anonymous wrapper function scope
@@ -52,4 +52,4 @@ http://weblogs.asp.net/dwahlin/techniques-strategies-and-patterns-for-structurin
 	jsModule.init();
 
 
-}($))//end anonymous wrapper function
+}($));//end anonymous wrapper function
