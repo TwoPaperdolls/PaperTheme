@@ -130,15 +130,15 @@ module.exports = function (grunt) {
                 filter: 'isFile'
             }]
           },
-          git:{
-            files: [{
-                expand: true, 
-                cwd:'./',
-                src: ['.git','.gitignore'], 
-                dest: '../<%= clientName %>_production', 
-            }]
-          }
-        },
+        //   git:{
+        //     files: [{
+        //         expand: true, 
+        //         cwd:'./',
+        //         src: ['.git','.gitignore'], 
+        //         dest: '../<%= clientName %>_production', 
+        //     }]
+        //   }
+        // },
         //replace all _s reference in ../<%= clientName %>_production/ with <%= clientName %>
        replace: {
           underscoresRefs: {
@@ -174,6 +174,19 @@ module.exports = function (grunt) {
               to: function (matchedWord) { return ".min" + matchedWord; }
             }]
           },
+        },
+        shell:{
+          gitBranchDeploy:{
+            command:[
+              'grunt clean',
+              'git branch -D production'
+              'git branch production',
+              'git checkout production',
+              'git status'
+
+            ].join('&&')
+          }
+
         },
         // setup "grunt watch" task
         watch: {
