@@ -1,3 +1,4 @@
+
 ###############################################################################
 ##                                                                            #
 ##       GIT IGNORE FOR WORDPRESS SITES                                       #
@@ -90,6 +91,8 @@ wp-content/mu-plugins/
 # wp-content/themes/*
 wp-content/themes/twentyfourteenres
 !wp-content/themes/BaseTheme
+!wp-content/themes/BaseTheme/.tmp
+
 
 
 

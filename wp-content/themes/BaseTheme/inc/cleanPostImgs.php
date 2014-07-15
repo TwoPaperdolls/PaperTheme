@@ -29,8 +29,8 @@ add_filter( 'the_content', '_s_img_unautop', 30 );
 
 
 // Remove width and height in editor, for a better responsive world.
-if( ! function_exists( 'reverie_image_editor ' ) ) {
-	function reverie_image_editor($html, $id, $alt, $title) {
+if( ! function_exists( '_s_image_editor ' ) ) {
+	function _s_image_editor($html, $id, $alt, $title) {
 		return preg_replace(array(
 				'/\s+width="\d+"/i',
 				'/\s+height="\d+"/i',
