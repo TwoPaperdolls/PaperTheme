@@ -181,9 +181,7 @@ module.exports = function (grunt) {
         gitcheckout: {
           production: {
             options: {
-              branch:'production',
-              create: true,
-              overwrite: true
+              branch:'production'
             }
           }
         },
@@ -198,7 +196,7 @@ module.exports = function (grunt) {
             command:[
             'git add ../<%= clientName %>_production/',
             'git status',
-            'git commit -m"generated from [`git name-rev --name-only $prevHEAD`] branch \n"+"`git log -1 HEAD`"'
+            'git commit -m"GENEREATED FROM \n `git log -1 --pretty=format:"[%h] %s"`  " '
             ].join('&&')
           }
         },
