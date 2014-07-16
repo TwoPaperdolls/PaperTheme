@@ -179,29 +179,52 @@ module.exports = function (grunt) {
           },
         },
         shell:{
-          gitBranchDeploy:{
+          gitBranchProduction:{
             command:[
             'git branch production',
             'git checkout production',
-            'grunt build',
-            'cd ../<%= clientName %>_production',
-            'git add ../<%= clientName %>_production',
+            ].join('&&')
+          },
+          gitAddProduction:{
+            command:[
+            'git status',
+            'git add ../<%= clientName %>_production/',
             'git status'
             ].join('&&')
+          }
+        },
+        notify:{
+          watch:{
+            options:{
+              title: 'Watch Complete',  
+              message: 'SASS, Uglify, JS Hint, Image min. finished \n'+'.tmp/assets created',
+            }
+          },
+          testJS:{
+            options:{
+              title:'Test-js Complete',
+              message:'JS linted, concated, and uglified \n' + '.tmp/assets/js created'
+            }
+          },
+          build:{
+            options:{
+              title: '<%= clientName %>_production theme created',
+              message:'git production branch created \n'+ 'you are now on the production branch'
+            }
           }
         },
         // setup "grunt watch" task
         watch: {
             files: ['scss/**/*.scss', 'css/*', 'js/*.js', 'imgs/**/*.{png,jpg,jpeg,gif}'],
-            tasks: ['compass:dev','autoprefixer','jshint','concat', 'cssmin', 'uglify', 'imagemin']
+            tasks: ['compass:dev','autoprefixer','jshint','concat', 'cssmin', 'uglify', 'imagemin','notify:watch']
         }
     });
     // register "grunt watch" task for use
     grunt.registerTask('default', ['autoprefixer','concat','cssmin:css','jshint','uglify']);
 
     // setup and register "grunt test-js" task for use
-    grunt.registerTask('test-js', ['jshint', 'concat:js', 'uglify:js']);
+    grunt.registerTask('test-js', ['jshint', 'concat:js', 'uglify:js', 'notify:testJS']);
 
     // setup and register "grunt build" to generate production theme
-    grunt.registerTask('build', ['compass:prod','autoprefixer','jshint','concat', 'cssmin', 'uglify', 'imagemin', 'copy', 'replace']);
+    grunt.registerTask('build', ['shell:gitBranchProduction','compass:prod','autoprefixer','jshint','concat', 'cssmin', 'uglify', 'imagemin', 'copy', 'replace','shell:gitAddProduction', 'notify:build']);
 };
