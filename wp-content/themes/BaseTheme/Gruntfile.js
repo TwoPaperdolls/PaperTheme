@@ -181,15 +181,14 @@ module.exports = function (grunt) {
         shell:{
           gitBranchProduction:{
             command:[
-            'git branch production',
-            'git checkout production',
+            'git branch production'
             ].join('&&')
           },
           gitAddProduction:{
             command:[
-            'git status',
             'git add ../<%= clientName %>_production/',
-            'git status'
+            'git status',
+            'git checkout production'
             ].join('&&')
           }
         },
