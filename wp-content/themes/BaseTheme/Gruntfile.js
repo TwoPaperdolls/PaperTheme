@@ -178,17 +178,27 @@ module.exports = function (grunt) {
             }]
           },
         },
+        gitcheckout: {
+          production: {
+            options: {
+              branch:'production',
+              create: true,
+              overwrite: true
+            }
+          }
+        },
         shell:{
-          gitBranchProduction:{
-            command:[
-            'git branch production'
-            ].join('&&')
-          },
+          // gitBranchProduction:{
+          //   command:[
+          //   'git branch production',
+          //   'git checkout production'
+          //   ].join('&&')
+          // },
           gitAddProduction:{
             command:[
             'git add ../<%= clientName %>_production/',
             'git status',
-            'git checkout production'
+            'git commit -m"generated from [`git name-rev --name-only $prevHEAD`] branch \n"+"`git log -1 HEAD`"'
             ].join('&&')
           }
         },
@@ -225,5 +235,5 @@ module.exports = function (grunt) {
     grunt.registerTask('test-js', ['jshint', 'concat:js', 'uglify:js', 'notify:testJS']);
 
     // setup and register "grunt build" to generate production theme
-    grunt.registerTask('build', ['shell:gitBranchProduction','compass:prod','autoprefixer','jshint','concat', 'cssmin', 'uglify', 'imagemin', 'copy', 'replace','shell:gitAddProduction', 'notify:build']);
+    grunt.registerTask('build', ['gitcheckout:production','compass:prod','autoprefixer','jshint','concat', 'cssmin', 'uglify', 'imagemin', 'copy', 'replace','shell:gitAddProduction', 'notify:build']);
 };
