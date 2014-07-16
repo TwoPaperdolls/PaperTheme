@@ -130,15 +130,15 @@ module.exports = function (grunt) {
                 filter: 'isFile'
             }]
           },
-        //   git:{
-        //     files: [{
-        //         expand: true, 
-        //         cwd:'./',
-        //         src: ['.git','.gitignore'], 
-        //         dest: '../<%= clientName %>_production', 
-        //     }]
-        //   }
-        // },
+          git:{
+            files: [{
+                expand: true, 
+                cwd:'./',
+                src: ['.git','.gitignore'], 
+                dest: '../<%= clientName %>_production', 
+            }]
+          }
+        },
         //replace all _s reference in ../<%= clientName %>_production/ with <%= clientName %>
        replace: {
           underscoresRefs: {
@@ -178,15 +178,15 @@ module.exports = function (grunt) {
         shell:{
           gitBranchDeploy:{
             command:[
-              'grunt clean',
-              'git branch -D production'
-              'git branch production',
-              'git checkout production',
-              'git status'
-
+            'git branch production',
+            'git checkout production',
+            'grunt build',
+            'cd ../<%= clientName %>_production',
+            'git status',
+            'git add --all',
+            'git status'
             ].join('&&')
           }
-
         },
         // setup "grunt watch" task
         watch: {

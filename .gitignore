@@ -89,7 +89,6 @@ wp-content/mu-plugins/
 #     Specific Themes       #
 #===========================#
 # wp-content/themes/*
-wp-content/themes/twentyfourteenres
 !wp-content/themes/BaseTheme
 !wp-content/themes/BaseTheme/.tmp
 
