@@ -100,7 +100,10 @@ module.exports = function (grunt) {
         },
         // Empties .tmp folders to start fresh "grunt build"
         clean: {
-          tmp: [".tmp/*",".tmp/assets/**",".sass-cache/**.scssc"]
+          tmp: [
+            ".tmp/",
+            ".sass-cache"
+            ]
         },
         // Copies all necessary php and assets to theme named "_production" parent directory
         copy: {
@@ -182,8 +185,7 @@ module.exports = function (grunt) {
             'git checkout production',
             'grunt build',
             'cd ../<%= clientName %>_production',
-            'git status',
-            'git add --all',
+            'git add ../<%= clientName %>_production',
             'git status'
             ].join('&&')
           }
