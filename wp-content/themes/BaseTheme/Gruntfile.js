@@ -178,20 +178,25 @@ module.exports = function (grunt) {
             }]
           },
         },
+        // create and checkout to "production" branch
+        // overwrites previous branch
         gitcheckout: {
           production: {
             options: {
-              branch:'production'
+              branch:'production',
+              create: true,
+              overwrite: true
+            }
+          }
+        },
+        gitpush:{
+          production:{
+            options: {
+              branch: 'production'
             }
           }
         },
         shell:{
-          // gitBranchProduction:{
-          //   command:[
-          //   'git branch production',
-          //   'git checkout production'
-          //   ].join('&&')
-          // },
           gitAddProduction:{
             command:[
             'git add ../<%= clientName %>_production/',
@@ -218,6 +223,12 @@ module.exports = function (grunt) {
               title: '<%= clientName %>_production theme created',
               message:'git production branch created \n'+ 'you are now on the production branch'
             }
+          },
+          deploy:{
+            options:{
+              title: '<%= clientName %>_production DEPLOYED to server',
+              message:'git pushed to remote repo'
+            }
           }
         },
         // setup "grunt watch" task
@@ -234,4 +245,8 @@ module.exports = function (grunt) {
 
     // setup and register "grunt build" to generate production theme
     grunt.registerTask('build', ['gitcheckout:production','compass:prod','autoprefixer','jshint','concat', 'cssmin', 'uglify', 'imagemin', 'copy', 'replace','shell:gitAddProduction', 'notify:build']);
+
+    // setup and register "grunt deploy" to 'git push origin production'
+    // note: 'grunt build' should be ran before this command
+    grunt.registerTask('deploy', ['gitpush:production']);
 };
