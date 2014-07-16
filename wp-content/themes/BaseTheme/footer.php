@@ -9,7 +9,7 @@
 ?>
 
 	</div><!-- #content -->
-
+	<h1> Changing Thigns</h1>
 	<footer id="colophon" class="site-footer" role="contentinfo">
 		<div class="site-info">
 		</div><!-- .site-info -->
