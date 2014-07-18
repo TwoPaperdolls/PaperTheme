@@ -4,9 +4,10 @@ module.exports = function (grunt) {
 
     grunt.initConfig({
         /* =======================================================================
-          Set Client Name variable to be used throughout task 
+          Set Client Name and variable to be used throughout task 
         ========================================================================== */
         clientName: '_TPD_BaseTheme',
+        devBranch: 'grunt',
         /* ======================================================================= */
                    
 
@@ -79,12 +80,12 @@ module.exports = function (grunt) {
         // minify concatenated js
         uglify: {
             js: {
-                files: {
-                    '.tmp/assets/js/<%= clientName %>_js.min.js': ['.tmp/assets/js/<%= clientName %>_js.min.js']
-                }
+              files: {'.tmp/assets/js/<%= clientName %>_js.min.js': ['.tmp/assets/js/<%= clientName %>_js.min.js']}
             },
             // minify and export modernizr to .tmp/assets/js/libs/
-            modernizr:{files:{'.tmp/assets/js/libs/modernizr.custom.min.js': ['js/libs/modernizr.custom.js']}}
+            modernizr:{
+              files:{'.tmp/assets/js/libs/modernizr.custom.min.js': ['js/libs/modernizr.custom.js']}
+            }
         },
         // compress images
         // output to .tmp/assets/imgs
@@ -132,14 +133,6 @@ module.exports = function (grunt) {
                 dest: '../<%= clientName %>_production/', 
                 filter: 'isFile'
             }]
-          },
-          git:{
-            files: [{
-                expand: true, 
-                cwd:'./',
-                src: ['.git','.gitignore'], 
-                dest: '../<%= clientName %>_production', 
-            }]
           }
         },
         //replace all _s reference in ../<%= clientName %>_production/ with <%= clientName %>
@@ -178,59 +171,68 @@ module.exports = function (grunt) {
             }]
           },
         },
-        // create and checkout to "production" branch
-        // overwrites previous branch
+
         gitcheckout: {
-          production: {
-            options: {
-              branch:'production',
-              create: true,
-              overwrite: true
-            }
+          master: {
+            options: { branch:'master', create: false, overwrite: false}
+          },
+          devBranch:{
+            options: { branch:'<%= devBranch %>', create: false, overwrite: false}
           }
         },
+
+        gitmerge: {
+          devBranch: {
+            options: { branch:'<%= devBranch %>', message:'--merged <%= devBranch %>--'}
+          }
+        },
+
         gitpush:{
           production:{
-            options: {
-              branch: 'production'
-            }
+            options: {remote:'origin', branch: 'master'}
+          },
+          dev: {
+            options: {remote:'origin', branch: '<%= devBranch %>'}
           }
         },
+
         shell:{
-          gitAddProduction:{
+          gitAddCommit_production:{
             command:[
             'git add ../<%= clientName %>_production/',
             'git status',
-            'git commit -m"GENEREATED FROM \n `git log -1 --pretty=format:"[%h] %s"`  " '
+            'git commit -a -m"GENEREATED FROM \n `git log -1 --pretty=format:"[%h] %s"`\n " ',
+            'git log -1'
             ].join('&&')
-          }
+          },
         },
-        notify:{
-          watch:{
-            options:{
-              title: 'Watch Complete',  
-              message: 'SASS, Uglify, JS Hint, Image min. finished \n'+'.tmp/assets created',
-            }
-          },
-          testJS:{
-            options:{
-              title:'Test-js Complete',
-              message:'JS linted, concated, and uglified \n' + '.tmp/assets/js created'
-            }
-          },
-          build:{
-            options:{
-              title: '<%= clientName %>_production theme created',
-              message:'git production branch created \n'+ 'you are now on the production branch'
-            }
-          },
-          deploy:{
-            options:{
-              title: '<%= clientName %>_production DEPLOYED to server',
-              message:'git pushed to remote repo'
-            }
-          }
-        },
+        // TODO: rewrite notifications
+        // notify:{
+        //   watch:{
+        //     options:{
+        //       title: 'Watch Complete',  
+        //       message: 'SASS, Uglify, JS Hint, Image min. finished \n'+'.tmp/assets created',
+        //     }
+        //   },
+        //   testJS:{
+        //     options:{
+        //       title:'Test-js Complete',
+        //       message:'JS linted, concated, and uglified \n' + '.tmp/assets/js created'
+        //     }
+        //   },
+        //   build:{
+        //     options:{
+        //       title: '<%= clientName %>_production theme created',
+        //       message:'git production branch created \n'+ 'you are now on the production branch'
+        //     }
+        //   },
+        //   deploy:{
+        //     options:{
+        //       title: '<%= clientName %>_production DEPLOYED to server',
+        //       message:'git pushed to remote repo'
+        //     }
+        //   }
+        // },
         // setup "grunt watch" task
         watch: {
             files: ['scss/**/*.scss', 'css/*', 'js/*.js', 'imgs/**/*.{png,jpg,jpeg,gif}'],
@@ -241,12 +243,24 @@ module.exports = function (grunt) {
     grunt.registerTask('default', ['autoprefixer','concat','cssmin:css','jshint','uglify']);
 
     // setup and register "grunt test-js" task for use
-    grunt.registerTask('test-js', ['jshint', 'concat:js', 'uglify:js', 'notify:testJS']);
+    grunt.registerTask('test-js', ['jshint', 'concat:js', 'uglify:js']);
 
     // setup and register "grunt build" to generate production theme
-    grunt.registerTask('build', ['gitcheckout:production','compass:prod','autoprefixer','jshint','concat', 'cssmin', 'uglify', 'imagemin', 'copy', 'replace','shell:gitAddProduction', 'notify:build']);
+    grunt.registerTask('build', ['compass:prod',
+                                 'autoprefixer',
+                                 'jshint',
+                                 'concat',
+                                 'cssmin',
+                                 'uglify', 
+                                 'imagemin', 
+                                 'copy', 
+                                 'replace']);
 
-    // setup and register "grunt deploy" to 'git push origin production'
+    
     // note: 'grunt build' should be ran before this command
-    grunt.registerTask('deploy', ['gitpush:production']);
+    grunt.registerTask('deploy', ['shell:gitAddCommit_production',
+                                  'gitcheckout:master',
+                                  'gitmerge:grunt',
+                                  'gitpush:production',
+                                  'gitcheckout:grunt']);
 };
